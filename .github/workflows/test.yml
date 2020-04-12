@@ -1,0 +1,33 @@
+name: Test
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+
+    - name: Debug
+      uses: hmarr/debug-action@v1.0.0
+
+    - name: Add Check
+      uses: actions/github-script@0.9.0
+      with:
+        github-token: '${{secrets.GITHUB_TOKEN}}'
+        script: |
+          github.checks.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            name: 'Test Check',
+            head_sha: github.event.pull_request.head.sha,
+            status: 'queued',
+            output: {
+              title: 'This is the output title',
+              summary: 'This is the output summary',
+              text: 'This is the output text'
+            }
+          });
